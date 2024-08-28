@@ -9,6 +9,11 @@ dist
 # Node dependencies
 node_modules
 
+# pyblics 
+public/*images
+public/images
+images
+
 # Logs
 logs
 *.log
@@ -22,3 +27,11 @@ logs
 .env
 .env.*
 !.env.example
+
+# Python Files 
+.venv
+db.sqlite3
+__pycache__
+.migrations
+
+*__pycache__
