@@ -1,11 +1,17 @@
 from .serializers import ProductSerializer, BrandSerializer, CategorySerializer
 from .models import Product, Category, Brand
 
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination  # type: ignore
+from rest_framework.response import Response  # type: ignore
+from django.shortcuts import get_object_or_404  # type: ignore
 
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins  # type: ignore
+from rest_framework.decorators import action  # type: ignore
+
+
+class CustomPagination(LimitOffsetPagination):
+    default_limit = 10
+    max_limit = 15
 
 
 class BrandView(viewsets.ViewSet):
@@ -38,35 +44,15 @@ class CategoryView(viewsets.ViewSet):
         serializer = CategorySerializer(paginator_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
 
+    def retrieve(self, request, pk=None):
+        singe_data = get_object_or_404(self.queryset, pk=pk)
+        serializer = CategorySerializer(singe_data)
+        return Response(serializer.data)
 
-class CustomPagination(LimitOffsetPagination):
-    default_limit = 5
-    max_limit = 50
-
-
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, filters
-
-
-class CustomPagination(LimitOffsetPagination):
-    default_limit = 5
-    max_limit = 50
-
-
-from rest_framework import viewsets, filters
-from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
-from rest_framework import status
-
-
-class CustomPagination(LimitOffsetPagination):
-    default_limit = 5
-    max_limit = 50
-
-
-# from rest_framework import status
+    # def retrieve(self, request, pk=None):
+    #     singe_data = get_object_or_404(self.queryset, pk=pk)
+    #     serializer = CategorySerializer(singe_data, context={"request": request})
+    #     return Response(serializer.data)
 
 
 class ProductView(viewsets.ViewSet):
@@ -95,33 +81,113 @@ class ProductView(viewsets.ViewSet):
 
     def list(self, request):
         # Set up pagination
-        paginator = LimitOffsetPagination()
-        paginator.default_limit = 5
+        paginator = CustomPagination()
         # Apply pagination to the queryset
         paginated_queryset = paginator.paginate_queryset(self.queryset, request)
         print("request ", request)
         # Serialize the paginated data
-        serializer = ProductSerializer(paginated_queryset, many=True)
+        serializer = ProductSerializer(
+            paginated_queryset, many=True, context={"request": request}
+        )
         return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk=None):
+        singe_data = get_object_or_404(self.queryset, pk=pk)
+        serializer = ProductSerializer(singe_data, context={"request": request})
+        return Response(serializer.data)
 
-        queryset = Product.objects.filter(category__name=pk)
-        print(request,'data ')
-        print(request,'data bane;m ', pk)
-        # singe_data = get_object_or_404(queryset, name=name)
-        try:
-            serializer = ProductSerializer(queryset, many=True)
-            return Response(serializer.data)
-        except:
-            serializer = ProductSerializer(queryset)
-            return Response(serializer.error)
 
-    # def retrieve(self, request, pk=None):
-    #     singe_data = get_object_or_404(self.queryset, pk=pk)
-    #     try:
-    #         serializer = ProductSerializer(singe_data)
-    #         return Response(serializer.data)
-    #     except Exception as e:
-    #         serializer = ProductSerializer(singe_data)
-    #         return Response(serializer.error, status=status)
+class ProductByCategoryViewSet(
+    # mixins.CreateModelMixin,
+    # mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    # Lookup_field = "category"
+
+    # def list(self, request):
+    #     paginator = CustomPagination()
+    #     paginated_queryset = paginator.paginate_queryset(self.queryset, request)
+    #     serializer = ProductSerializer(
+    #         paginated_queryset, many=True, context={"request": request}
+    #     )
+    #     return paginator.get_paginated_response(serializer.data)
+
+    def list(self, request):
+        # Set up pagination
+        paginator = CustomPagination()
+        # Apply pagination to the queryset
+        paginated_queryset = paginator.paginate_queryset(self.queryset, request)
+        print("request ", request)
+        # Serialize the paginated data
+        serializer = ProductSerializer(
+            paginated_queryset, many=True, context={"request": request}
+        )
+        return paginator.get_paginated_response(serializer.data)
+
+    def retrieve(self, request, pk=None):
+        singe_data = get_object_or_404(self.queryset, pk=pk)
+        serializer = ProductSerializer(singe_data, context={"request": request})
+        return Response(serializer.data)
+
+    @action(detail=False, url_path="(?P<category>[^/.]+)")
+    def by_category(self, request, category=None):
+        queryset = Product.objects.filter(category__name=category)
+        serializer = ProductSerializer(
+            queryset, many=True, context={"request": request}
+        )
+        return Response(serializer.data)
+
+
+'''
+# class ProductByCategoryViewSet(viewsets.ViewSet):
+#     """
+#     A simple ViewSet for listing all products categories.
+#     """
+
+#     queryset = Product.objects.all()
+
+#     # Set up pagination
+#     def list(self, request):
+#         paginator = CustomPagination()
+#         # queryset = Product.objects.all()
+#         # Apply pagination to the queryset
+#         paginated_queryset = paginator.paginate_queryset(self.queryset, request)
+#         print("request ", request)
+#         # Serialize the paginated data
+#         serializer = ProductSerializer(
+#             paginated_queryset, many=True, context={"request": request}
+#         )
+#         return paginator.get_paginated_response(serializer.data)
+
+#     def retrieve(self, request, pk=None):
+#         queryset = Product.objects.filter(category__name=pk)
+#         serializer = ProductSerializer(
+#             queryset, many=True, context={"request": request}
+#         )
+#         return Response(serializer.data)
+
+'''
+
+
+class ProductCategoryViewSet(viewsets.ViewSet):
+    """
+    A simple ViewSet for listing all products categories.
+    """
+
+    queryset = Category.objects.all()
+
+    # Set up pagination
+    def list(self, request):
+        paginator = CustomPagination()
+        # queryset = Product.objects.all()
+        # Apply pagination to the queryset
+        paginated_queryset = paginator.paginate_queryset(self.queryset, request)
+        print("request ", request)
+        # Serialize the paginated data
+        serializer = CategorySerializer(
+            paginated_queryset, many=True, context={"request": request}
+        )
+        return paginator.get_paginated_response(serializer.data)

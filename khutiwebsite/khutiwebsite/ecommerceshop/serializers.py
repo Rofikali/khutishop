@@ -9,18 +9,28 @@ class BrandSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    # category_detail_url = serializers.HyperlinkedIdentityField(
+    #     view_name="ecommerceshop:category-detail"
+    # )
+
     class Meta:
         model = Category
         fields = "__all__"
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    # brand = BrandSerializer()
+    brand = BrandSerializer()
     category = CategorySerializer()
+
+    product_detail_url = serializers.HyperlinkedIdentityField(
+        view_name="ecommerceshop:ecommerceshop-detail",
+        # lookup_field="category",
+    )
 
     class Meta:
         model = Product
-        fields = ["name", "brand", "category"]
+        # fields = ["name", "brand", "category", "product_detail_url"]
+        fields = ["id", "name", "brand", "category", "product_detail_url"]
         # depth = 3
 
 
