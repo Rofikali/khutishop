@@ -23,15 +23,28 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
 
     product_detail_url = serializers.HyperlinkedIdentityField(
-        view_name="ecommerceshop:ecommerceshop-detail",
-        # lookup_field="category",
+        view_name="ecommerceshop:products-detail",  # detail is by default is added
+        # lookup_field="pk",
+    )
+
+    product_category_url = serializers.HyperlinkedIdentityField(
+        view_name="ecommerceshop:product-category-list", lookup_field="category"
     )
 
     class Meta:
         model = Product
-        # fields = ["name", "brand", "category", "product_detail_url"]
-        fields = ["id", "name", "brand", "category", "product_detail_url"]
-        # depth = 3
+        fields = [
+            "id",
+            "name",
+            "brand",
+            "category",
+            "product_detail_url",
+            "product_category_url",
+        ]
+        readonly = True
+        editaboe = False
+
+        # depth = 2
 
 
 # class PostsModelSerializer(serializers.ModelSerializer):

@@ -27,6 +27,7 @@ class Brand(models.Model):
 
 
 class Category(MPTTModel):
+    slug = models.SlugField(max_length=100, unique=False) # check unique 
     name = models.CharField(max_length=50, unique=True)
     parent = TreeForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
