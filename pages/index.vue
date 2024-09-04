@@ -18,10 +18,10 @@
 // first step 
 // const { status, data: posts, error } = await useLazyAsyncData(() => $fetch('http://127.0.0.1:8000/posts'))
 // second steps 
-// const { status, data: posts, error } = await useLazyAsyncData(() => $fetch('/posts'))
+const { status, data: posts, error } = await useLazyAsyncData(() => $fetch('/posts'))
 // third steps 
-import { onMounted } from 'vue'
-import { useFetchPosts } from '~/composables/useFetchPosts'
+// import { onMounted } from 'vue'
+// import { useFetchPosts } from '~/composables/useFetchPosts'
 
 </script>
 

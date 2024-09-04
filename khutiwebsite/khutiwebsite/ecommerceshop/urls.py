@@ -21,7 +21,7 @@ router.register(
 
 # (?P<category>[^/.]+)
 router.register(
-    r"api/porduct/(?P<category>[^/.]+)",
+    r"api/porducts_by_category/(?P<category>[^/.]+)",
     ProductByCategoryViewSet,
     basename="product-category",
 )

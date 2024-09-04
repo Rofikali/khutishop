@@ -18,23 +18,23 @@ definePageMeta({
     layout: 'custom'
 })
 // import { ref } from 'vue'
-// const route = useRoute();
+const route = useRoute();
 // // Fetching the data using useLazyAsyncData
-// const { data: post, pending, error } = await useLazyAsyncData(() => $fetch(`/posts/${route.params.id}`))
+const { data: post, pending, error } = await useLazyAsyncData(() => $fetch(`/posts/${route.params.id}`))
 // // const { data: post, pending, error } = await useLazyAsyncData(() => $fetch(`http://127.0.0.1:8000/posts/${route.params.id}`))
 // console.log('single post ', post)
 
 
-import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
-import { useFetchPosts } from '~/composables/useFetchPosts'
+// import { onMounted } from 'vue'
+// import { useRoute } from 'vue-router'
+// import { useFetchPosts } from '~/composables/useFetchPosts'
 
-const { post, fetchPostById } = useFetchPosts()
-const route = useRoute()
+// const { post, fetchPostById } = useFetchPosts()
+// const route = useRoute()
 
-onMounted(() => {
-    fetchPostById(route.params.id)
-})
+// onMounted(() => {
+//     fetchPostById(route.params.id)
+// })
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

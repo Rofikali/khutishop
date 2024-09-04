@@ -80,6 +80,7 @@ class ProductByCategoryViewSet(
     queryset = Product.objects.all()
     # serializer_class = ProductSerializer
     lookup_field = "category"
+    pagination_class = LimitOffsetPagination
 
     def list(self, request, category=None):
         queryset = Product.objects.filter(category__name=category)
