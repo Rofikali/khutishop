@@ -16,11 +16,11 @@ class PostsModelSerializer(serializers.ModelSerializer):
             "post_detail",
         ]
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        if instance.image:
-            representation["image"] = instance.image.name
-        return representation
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     if instance.image:
+    #         representation["image"] = instance.image.name
+    #     return representation
 
     post_detail = serializers.HyperlinkedIdentityField(
         view_name="postsapi:post", lookup_field="pk"
