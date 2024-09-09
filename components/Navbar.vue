@@ -23,8 +23,8 @@
                     <NuxtLink :to="{ name: 'about' }" class="mr-5 hover:text-gray-900">
                         About
                     </NuxtLink>
-                    <NuxtLink :to="{ name: 'new' }" class="mr-5 hover:text-gray-900">
-                        New
+                    <NuxtLink :to="{ name: 'postsall' }" class="mr-5 hover:text-gray-900">
+                        postsall-view
                     </NuxtLink>
                     <a class="mr-5 hover:text-gray-900">Second Link</a>
                     <a class="mr-5 hover:text-gray-900">Third Link</a>

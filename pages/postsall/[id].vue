@@ -1,16 +1,27 @@
 <template>
-    <div v-if="post">
-        <LazyPostdetail :post="post" />
-    </div>
-    <div v-else-if="error">
+
+    <div v-if="error">
         <h1>error ... {{ error }}</h1>
     </div>
-    <div v-else>
+    <div v-else-if="pending">
         <h1>Loading...</h1>
     </div>
+    <div v-else="post">
+        <!-- <LazyPostdetail :post="post" /> -->
+        single post here - {{ post }}
+    </div>
+    <!-- <h2>child -- {{ props.child }}</h2> -->
 </template>
 
 <script setup>
+
+
+// const child = useAttrs().child
+// console.log('child from parents', useAttrs.child);
+
+// const props = defineProps(['child'])
+
+
 
 definePageMeta({
     layout: 'custom'
